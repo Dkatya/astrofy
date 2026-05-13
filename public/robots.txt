@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yekaterinadonegal.dev/sitemap-index.xml
+Sitemap: https://www.yekaterinadonegal.dev/sitemap-index.xml
