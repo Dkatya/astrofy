@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import createSlug from "../../lib/createSlug";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const dateFmt = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+---
+
+<BaseLayout title="Blog" activeNav="blog">
+  <h1 class="text-3xl font-bold mb-2">Writing</h1>
+  <p class="opacity-80 mb-8">
+    Notes on data science, machine learning, and the occasional detour.
+  </p>
+
+  {
+    posts.length === 0 ? (
+      <p class="opacity-70">Nothing here yet — check back soon.</p>
+    ) : (
+      <ul class="divide-y divide-base-300">
+        {posts.map((post) => (
+          <li class="py-3 flex items-baseline gap-4">
+            <time class="font-mono text-sm opacity-70 shrink-0 tabular-nums">
+              {dateFmt.format(post.data.pubDate)}
+            </time>
+            <a
+              class="hover:underline"
+              href={"/blog/" + createSlug(post.data.title, post.slug)}
+            >
+              {post.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # Astro
 .astro/
+# Claude Code config
+.claude/
+pnpm-workspace.yaml

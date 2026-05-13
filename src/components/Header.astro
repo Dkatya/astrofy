@@ -1,17 +1,59 @@
-<div
-  class="sticky lg:hidden top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-100 text-base-content shadow-sm"
->
-  <div class="navbar">
-    <div class="navbar-start">
-      <label for="my-drawer" class="btn btn-square btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"
-          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+---
+import { Image } from "astro:assets";
+const { activeNav } = Astro.props;
+
+const navItems = [
+  { id: "home", label: "Home", href: "/" },
+  { id: "projects", label: "Projects", href: "/projects" },
+  { id: "services", label: "Services", href: "/services" },
+  { id: "blog", label: "Blog", href: "/blog" },
+  { id: "about", label: "About", href: "/about" },
+  { id: "contact", label: "Contact", href: "mailto:contact@yekaterinadonegal.dev" },
+];
+---
+
+<header class="sticky top-0 z-30 w-full bg-base-100 border-b border-base-300">
+  <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3 group">
+      <div class="avatar">
+        <div class="w-9 mask mask-circle">
+          <Image format="webp" width={72} height={72} src="/profile.webp" alt="Yekaterina Donegal" />
+        </div>
+      </div>
+      <span class="font-semibold text-base group-hover:opacity-80">Yekaterina Donegal</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-1 text-sm">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "px-3 py-1.5 rounded-md hover:bg-base-200 transition-colors",
+              activeNav === item.id && "bg-base-200 font-semibold",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <details class="md:hidden dropdown dropdown-end">
+      <summary class="btn btn-ghost btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-      </label>
-    </div>
-    <div class="navbar-center">
-      <a class="btn btn-ghost normal-case text-xl" href="/">Manuel Ernesto ⚡️</a>
-    </div>
-    <div class="navbar-end"></div>
+      </summary>
+      <ul class="dropdown-content menu bg-base-200 rounded-box w-48 mt-2 shadow z-40">
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href} class:list={[activeNav === item.id && "active"]}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
   </div>
-</div>
+</header>

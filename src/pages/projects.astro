@@ -3,49 +3,57 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
 ---
 
-<BaseLayout title = "Projects" sideBarActiveItemID="projects">
-  <div>
-    <div class="text-3xl w-full font-bold mb-5">Projects Header</div>
+<BaseLayout title="Projects" activeNav="projects">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2">Projects</h1>
+    <p class="opacity-80">
+      A mix of group research, applied-ML coursework, and personal side projects.
+    </p>
   </div>
 
-  <HorizontalCard
-    title="Demo Project 1"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="NEW"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 2"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
-
-  <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">Projects Header</div>
-  </div>
+  <h2 class="text-xl font-semibold mb-3 mt-6">Research</h2>
 
   <HorizontalCard
-    title="Demo Project 3"
+    title="CAMELS — Multimodal latent space (LSCA)"
     img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="FOSS"
+    desc="Group capstone research project building a real-time multimodal understanding pipeline for human–AI interaction. Video, phoneme, and prosody modalities are projected into a shared 768-D latent space via an Adapted Pretrained Encoders architecture. This is a team effort with Watson Blair and the LSCA collaborators; my contributions have included adapter training, evaluation pipelines, and visualization. The team repo (WatsonWBlair/LSCA) is private; a public companion repo lives at the link below."
+    url="https://github.com/Dkatya/camels-multimodal-encoders"
+    target="_blank"
+    badge="Team"
+  />
+
+  <h2 class="text-xl font-semibold mb-3 mt-10">Applied ML</h2>
+
+  <HorizontalCard
+    title="Restaurant Allergen Assistant"
+    img="/post_img.webp"
+    desc="AI-powered real-time allergen lookup for restaurant staff. Combines OCR for menu ingestion, GPT-3.5 for reasoning, and Retrieval Augmented Generation for grounded allergen lookups."
+    url="https://github.com/Dkatya/restaurant-allergen-assistant"
+    target="_blank"
   />
   <div class="divider my-0"></div>
   <HorizontalCard
-    title="Demo Project 4"
+    title="NYC Electricity Consumption Forecasting"
     img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
+    desc="Time-series forecasting of NYC electricity consumption using Facebook Prophet — seasonality decomposition, holiday effects, and forecast evaluation."
+    url="https://github.com/Dkatya/NYC-Electricity-Consumption-Forecasting-with-Prophet"
+    target="_blank"
   />
   <div class="divider my-0"></div>
   <HorizontalCard
-    title="Demo Project 5"
+    title="Flight Delay Prediction (AWS + Hadoop)"
     img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
+    desc="Big-data pipeline analyzing flight delays on AWS with Hadoop, then training classical ML models to predict whether a flight will be delayed."
+    url="https://github.com/Dkatya/aws-hadoop-flight-project"
+    target="_blank"
+  />
+  <div class="divider my-0"></div>
+  <HorizontalCard
+    title="Life Expectancy — country-grouped cross-validation"
+    img="/post_img.webp"
+    desc="Started as a team project on predicting life expectancy from World Bank WDI socioeconomic indicators (GDP, fertility, urbanization, health spending, education) across the country–year panel from 2000 onward. I continued the work solo, and the cross-validation methodology is fully my own contribution: naive random k-fold leaks information across country and year, inflating R² and misleading model selection. I switched to country-grouped CV (no country appears in both train and validation), nested CV for hyperparameter selection in LASSO and Elastic Net (Cawley & Talbot 2010), and learning curves to diagnose bias vs. variance. Manuscript under submission to IEEE GHTC 2026; repo will go public after publication."
+    url="https://github.com/Dkatya/lifexp-ieee-ghtc-2026"
+    target="_blank"
+    badge="Submitted"
   />
 </BaseLayout>

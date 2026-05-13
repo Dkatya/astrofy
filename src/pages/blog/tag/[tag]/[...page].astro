@@ -1,98 +1,65 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import HorizontalCard from "@components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
 import createSlug from "../../../../lib/createSlug";
 
 export async function getStaticPaths({ paginate }) {
   const all_posts = await getCollection("blog");
-  const all_tags = all_posts.flatMap((post) => {
-    return post.data.tags || [];
-  });
+  const all_tags = [
+    ...new Set(all_posts.flatMap((post) => post.data.tags || [])),
+  ];
 
   return all_tags.flatMap((tag) => {
-    const filtred_posts = all_posts.filter((post) => {
-      return post.data.tags?.includes(tag);
-    });
-    return paginate(filtred_posts, {
+    const filtered_posts = all_posts
+      .filter((post) => post.data.tags?.includes(tag))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return paginate(filtered_posts, {
       params: { tag },
-      pageSize: 10,
+      pageSize: 20,
     });
   });
 }
 
 const { page } = Astro.props;
 const params = Astro.params;
+
+const dateFmt = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 ---
 
-<BaseLayout title={"Blog - " + params.tag} sideBarActiveItemID="blog">
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Blog - {params.tag}</div>
+<BaseLayout title={"Tag: " + params.tag} activeNav="blog">
+  <div class="mb-6">
+    <a href="/blog" class="text-sm opacity-80 hover:opacity-100">← All posts</a>
   </div>
+  <h1 class="text-3xl font-bold mb-6">Tag: <span class="opacity-80">{params.tag}</span></h1>
+
   {
     page.data.length === 0 ? (
-      <div class="bg-base-200 border-l-4 border-secondary w-full p-4 min-w-full">
-        <p class="font-bold">Sorry!</p>
-        <p>There are no blog posts to show at the moment. Check back later!</p>
-      </div>
+      <p class="opacity-70">No posts with this tag yet.</p>
     ) : (
-      <ul>
+      <ul class="divide-y divide-base-300">
         {page.data.map((post) => (
-          <>
-            <HorizontalCard
-              title={post.data.title}
-              img={post.data.heroImage}
-              desc={post.data.description}
-              url={"/blog/" + createSlug(post.data.title, post.slug)}
-              target="_self"
-              badge={post.data.badge}
-              tags={post.data.tags}
-            />
-            <div class="divider my-0" />
-          </>
+          <li class="py-3 flex items-baseline gap-4">
+            <time class="font-mono text-sm opacity-70 shrink-0 tabular-nums">
+              {dateFmt.format(post.data.pubDate)}
+            </time>
+            <a
+              class="hover:underline"
+              href={"/blog/" + createSlug(post.data.title, post.slug)}
+            >
+              {post.data.title}
+            </a>
+          </li>
         ))}
       </ul>
     )
   }
 
-  <div class="flex justify-between">
-    {
-      page.url.prev ? (
-        <a href={page.url.prev} class="btn btn-ghost my-10 mx-5">
-          {" "}
-          <svg
-            class="h-6 w-6 fill-current md:h-8 md:w-8"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
-          </svg>{" "}
-          Recent posts
-        </a>
-      ) : (
-        <div />
-      )
-    }
-    {
-      page.url.next ? (
-        <a href={page.url.next} class="btn btn-ghost my-10 mx-5">
-          Older Posts{" "}
-          <svg
-            class="h-6 w-6 fill-current md:h-8 md:w-8"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            {" "}
-            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-          </svg>
-        </a>
-      ) : (
-        <div />
-      )
-    }
+  <div class="flex justify-between mt-8 text-sm">
+    {page.url.prev ? <a href={page.url.prev} class="link">← Newer</a> : <div />}
+    {page.url.next ? <a href={page.url.next} class="link">Older →</a> : <div />}
   </div>
 </BaseLayout>
