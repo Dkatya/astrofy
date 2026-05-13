@@ -1,0 +1,63 @@
+---
+import { CollectionEntry, getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("projects");
+  // Only generate detail pages for projects that don't have an externalUrl
+  return entries
+    .filter((e) => !e.data.externalUrl)
+    .map((entry) => ({
+      params: { slug: entry.slug },
+      props: { entry },
+    }));
+}
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const { title, tldr, status, stack, githubUrl, category } = entry.data;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={title} description={tldr ?? entry.data.description} activeNav="projects">
+  <div class="mb-4">
+    <a href="/projects" class="text-sm opacity-80 hover:opacity-100">← All projects</a>
+  </div>
+
+  <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+    <h1 class="text-3xl sm:text-4xl font-bold leading-tight">{title}</h1>
+    {status && <span class="badge badge-primary badge-lg whitespace-nowrap">{status}</span>}
+  </div>
+
+  {category && <p class="text-sm opacity-70 mb-4">{category}</p>}
+
+  {stack && stack.length > 0 && (
+    <div class="flex flex-wrap gap-2 mb-6">
+      {stack.map((s) => (
+        <span class="badge badge-outline">{s}</span>
+      ))}
+    </div>
+  )}
+
+  {tldr && (
+    <div class="bg-base-200 border-l-4 border-primary rounded-r-lg p-4 my-6">
+      <div class="text-xs uppercase tracking-wide opacity-70 mb-1">TL;DR</div>
+      <p class="font-semibold leading-snug">{tldr}</p>
+    </div>
+  )}
+
+  <article class="prose prose-base sm:prose-lg max-w-none prose-headings:mt-8 prose-headings:mb-3 prose-img:rounded-lg prose-img:mx-auto">
+    <Content />
+  </article>
+
+  {githubUrl && (
+    <div class="mt-10 pt-6 border-t border-base-300">
+      <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+        View on GitHub →
+      </a>
+    </div>
+  )}
+</BaseLayout>

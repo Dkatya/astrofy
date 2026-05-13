@@ -9,11 +9,22 @@ const posts = (await getCollection("blog")).sort(
 );
 const last_posts = posts.slice(0, 5);
 
+const projects = (await getCollection("projects"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
 const dateFmt = new Intl.DateTimeFormat("en-CA", {
   year: "numeric",
   month: "2-digit",
   day: "2-digit",
 });
+
+function projectUrl(p: (typeof projects)[number]) {
+  return p.data.externalUrl ?? `/projects/${p.slug}`;
+}
+function projectTarget(p: (typeof projects)[number]) {
+  return p.data.externalUrl ? "_blank" : "_self";
+}
 ---
 
 <BaseLayout activeNav="home">
@@ -44,30 +55,21 @@ const dateFmt = new Intl.DateTimeFormat("en-CA", {
     </div>
   </section>
 
-  <HorizontalCard
-    title="CAMELS — Multimodal latent space"
-    img="/post_img.webp"
-    desc="Group capstone research project: video, phoneme, and prosody encoders aligned in a shared 768-D latent space for real-time human–AI interaction. Collaborators include Watson Blair and the LSCA team."
-    url="https://github.com/Dkatya/camels-multimodal-encoders"
-    target="_blank"
-    badge="Research"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Restaurant Allergen Assistant"
-    img="/post_img.webp"
-    desc="Real-time allergen lookup for restaurant staff using OCR, GPT-3.5, and Retrieval Augmented Generation."
-    url="https://github.com/Dkatya/restaurant-allergen-assistant"
-    target="_blank"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="NYC Electricity Consumption Forecasting"
-    img="/post_img.webp"
-    desc="Time-series forecasting of NYC electricity consumption with Facebook Prophet."
-    url="https://github.com/Dkatya/NYC-Electricity-Consumption-Forecasting-with-Prophet"
-    target="_blank"
-  />
+  {
+    projects.map((p, i) => (
+      <>
+        <HorizontalCard
+          title={p.data.title}
+          img={p.data.image ?? "/post_img.webp"}
+          desc={p.data.description}
+          url={projectUrl(p)}
+          target={projectTarget(p)}
+          badge={p.data.badge}
+        />
+        {i < projects.length - 1 && <div class="divider my-0" />}
+      </>
+    ))
+  }
 
   <section class="mt-12">
     <div class="flex items-baseline justify-between mb-3">
